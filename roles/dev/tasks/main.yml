@@ -1,0 +1,27 @@
+- name: install system packages
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ packages.system }}"
+# - name: update pip
+#   pip:
+#     name: pip
+#     state: latest
+- name: install python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    extra_args: --user
+  with_items: "{{ packages.python }}"
+- name: create user directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items: "{{ dirs }}"
+# - name: clone Rust source repo
+#   git:
+#     repo: "https://github.com/rust-lang/rust.git"
+#     dest: "{{ ansible_env.HOME }}/Projects/rust-src"
+#     clone: yes
+#     force: yes

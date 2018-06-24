@@ -1,0 +1,26 @@
+packages:
+  system:
+    - python-pip
+    - zsh
+    - neovim
+    - ripgrep
+    - fzf
+    - exa
+    - socat
+    - ethtool
+    - git
+    - clang
+    - rsync
+    - zeal
+    - tree
+    - jq
+    - tmux
+  python:
+    - virtualenv
+    - poetry
+    - bpython
+    - flake8
+    - neovim
+dirs:
+  - "{{ ansible_env.HOME }}/Projects"
+  - "{{ ansible_env.HOME }}/.fonts"
