@@ -19,9 +19,3 @@
     path: "{{ item }}"
     state: directory
   with_items: "{{ dirs }}"
-# - name: clone Rust source repo
-#   git:
-#     repo: "https://github.com/rust-lang/rust.git"
-#     dest: "{{ ansible_env.HOME }}/Projects/rust-src"
-#     clone: yes
-#     force: yes
