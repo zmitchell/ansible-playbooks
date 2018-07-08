@@ -1,0 +1,10 @@
+fzf_search_strings:
+    # Development desktop
+    Ubuntu: linux_amd64
+    # Raspberry Pi
+    Debian: linux_arm7
+    # Macbook Pro
+    Darwin: darwin_amd64
+fzf_should_download: true
+fzf_version_mismatch: false
+fzf_download_link: ""

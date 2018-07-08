@@ -1,0 +1,87 @@
+- name: Look for existing binary
+  command: which fzf
+  changed_when: false
+  failed_when: false
+  register: fzf_shell_query
+
+- name: Set installation status
+  set_fact: "fzf_installed={{ fzf_shell_query.rc == 0}}"
+
+- name: Query GitHub for releases
+  uri: url="https://api.github.com/repos/junegunn/fzf-bin/releases/latest"
+  register: fzf_github_response
+
+- name: Set latest release
+  set_fact: fzf_version_latest="{{ fzf_github_response.json.tag_name }}"
+
+- name: Get local version
+  block:
+    - name: Query local version
+      shell: "fzf --version | cut -d ' ' -f1"
+      register: fzf_version_output
+    - name: Store local version
+      set_fact: fzf_version_local="{{ fzf_version_output.stdout }}"
+  when: fzf_installed
+
+- name: Compare versions
+  set_fact: fzf_version_mismatch=true
+  when:
+    - fzf_installed
+    - fzf_version_latest != fzf_version_local
+
+- debug:
+    var: fzf_version_mismatch
+    verbosity: 2
+
+- name: Check if download can be skipped
+  set_fact: fzf_should_download=false
+  when:
+    - fzf_installed
+    - not fzf_version_mismatch
+
+- debug:
+    var: fzf_should_download
+    verbosity: 2
+
+- name: Get download link from GitHub
+  block:
+    - name: Find release for {{ ansible_distribution }}
+      shell: "curl -s https://api.github.com/repos/junegunn/fzf-bin/releases/latest | jq -r '.assets[] | select( .name | test(\"{{ fzf_search_strings[ansible_distribution] }}\")) | .browser_download_url'"
+      register: fzf_download_info
+    - name: Store download link
+      set_fact: fzf_download_link="{{ fzf_download_info.stdout }}"
+  when: fzf_should_download
+
+- name: Download from GitHub
+  get_url:
+    url: "{{ fzf_download_link }}"
+    dest: /tmp
+  when:
+    - fzf_should_download
+    - fzf_download_link != ""
+
+- name: Install from archive
+  block:
+    - name: Store downloaded archive name
+      set_fact:
+        fzf_archive: "fzf-{{ fzf_version_latest }}-{{ fzf_search_strings[ansible_distribution] }}.tgz"
+        fzf_stub: "fzf-{{ fzf_version_latest }}-{{ fzf_search_strings[ansible_distribution] }}"
+    - name: Unarchive {{ fzf_archive | default('fzf') }}
+      unarchive:
+        remote_src: yes
+        src: "/tmp/{{ fzf_archive }}"
+        dest: "/tmp"
+    - name: Move 'fzf' to /usr/local/bin
+      become: yes
+      copy:
+        remote_src: yes
+        src: /tmp/fzf
+        dest: /usr/local/bin/fzf
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: 0755
+    - name: Remove archive
+      command: rm -rf "{{ fzf_archive }}"
+  when:
+    - fzf_should_download
+    - fzf_download_link != ""
