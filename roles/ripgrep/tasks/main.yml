@@ -1,0 +1,119 @@
+- name: Look for existing ripgrep binary
+  command: which rg
+  changed_when: false
+  failed_when: false
+  register: ripgrep_shell_query
+
+- name: Set ripgrep installation status
+  set_fact: "ripgrep_installed={{ ripgrep_shell_query.rc == 0}}"
+
+- name: Query GitHub for ripgrep releases
+  uri: url="https://api.github.com/repos/BurntSushi/ripgrep/releases/latest"
+  register: github_response
+
+- name: Set latest ripgrep release
+  set_fact: ripgrep_version_latest="{{ github_response.json.tag_name }}"
+
+- name: Get local version
+  block:
+    - name: Query local version
+      shell: "rg --version | head -n 1 | cut -d ' ' -f2"
+      register: ripgrep_version_output
+    - name: Store local version
+      set_fact: ripgrep_version_local="{{ ripgrep_version_output.stdout }}"
+  when: ripgrep_installed
+
+- name: Compare versions
+  set_fact: ripgrep_version_mismatch=true
+  when:
+    - ripgrep_installed
+    - ripgrep_version_latest != ripgrep_version_local
+
+- debug:
+    var: ripgrep_version_mismatch
+    verbosity: 2
+
+- name: Check if download can be skipped
+  set_fact: ripgrep_should_download=false
+  when:
+    - ripgrep_installed
+    - not ripgrep_version_mismatch
+
+- debug:
+    var: ripgrep_should_download
+    verbosity: 2
+
+- name: Get download link from GitHub
+  block:
+    - name: Find release for {{ ansible_distribution }}
+      shell: "curl -s https://api.github.com/repos/BurntSushi/ripgrep/releases/latest | jq -r '.assets[] | select( .name | test(\"{{ ripgrep_search_strings[ansible_distribution] }}\")) | .browser_download_url'"
+      register: ripgrep_download_info
+    - name: Store download link
+      set_fact: ripgrep_download_link="{{ ripgrep_download_info.stdout }}"
+  when: ripgrep_should_download
+
+- name: Download from GitHub
+  get_url:
+    url: "{{ ripgrep_download_link }}"
+    dest: /tmp
+  when:
+    - ripgrep_should_download
+    - ripgrep_download_link != ""
+
+- name: Install from archive
+  block:
+    - name: Store downloaded archive name
+      set_fact:
+        ripgrep_archive: "ripgrep-{{ ripgrep_version_latest }}-{{ ripgrep_search_strings[ansible_distribution] }}.tar.gz"
+        ripgrep_stub: "ripgrep-{{ ripgrep_version_latest }}-{{ ripgrep_search_strings[ansible_distribution] }}"
+    - name: Unarchive {{ ripgrep_archive | default('ripgrep') }}
+      unarchive:
+        remote_src: yes
+        src: "/tmp/{{ ripgrep_archive }}"
+        dest: "/tmp"
+    - name: Move 'rg' to /usr/local/bin
+      become: yes
+      copy:
+        remote_src: yes
+        src: "/tmp/ripgrep-{{ ripgrep_version_latest }}-{{ ripgrep_search_strings[ansible_distribution] }}/rg"
+        dest: /usr/local/bin/rg
+        owner: "{{ ansible_user_id }}"
+        group: "{{ ansible_user_id }}"
+        mode: 0755
+    - name: Remove archive
+      command: rm -rf "{{ item }}"
+      with_items:
+        - "/tmp/{{ ripgrep_archive }}"
+        - "/tmp/{{ ripgrep_stub }}"
+  when:
+    - ripgrep_should_download
+    - ripgrep_download_link != ""
+    - ansible_distribution != "Ubuntu"
+
+- name: Install from .deb
+  block:
+    - name: Set .deb name
+      set_fact: ripgrep_deb="ripgrep_{{ ripgrep_version_latest }}_amd64.deb"
+    - name: Uninstall old version
+      become: yes
+      apt:
+        name: ripgrep
+        state: absent
+    - name: Install {{ ripgrep_deb | default('.deb') }}
+      become: yes
+      apt:
+        deb: "/tmp/{{ ripgrep_deb }}"
+      register: deb_install_result
+    - name: Remove {{ ripgrep_deb | default('.deb') }}
+      file:
+        path: "/tmp/{{ ripgrep_deb }}"
+        state: absent
+  when:
+    - ripgrep_should_download
+    - ripgrep_download_link != ""
+    - ansible_distribution == "Ubuntu"
+
+- debug:
+    msg: "{{ deb_install_result }}"
+    verbosity: 2
+

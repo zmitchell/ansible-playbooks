@@ -1,0 +1,10 @@
+ripgrep_search_strings:
+    # Development desktop
+    Ubuntu: deb
+    # Raspberry Pi
+    Debian: arm-unknown-linux-gnueabihf
+    # Macbook Pro
+    Darwin: x86_64-apple-darwin
+ripgrep_should_download: true
+ripgrep_version_mismatch: false
+ripgrep_download_link: ""
