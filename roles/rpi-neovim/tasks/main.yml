@@ -1,0 +1,77 @@
+- name: Look for existing neovim binary
+  command: which nvim
+  changed_when: false
+  failed_when: false
+  register: neovim_shell_query
+
+- name: Set neovim installation status
+  set_fact: neovim_installed="{{ neovim_shell_query.rc != 1 }}"
+
+- name: Query GitHub for releases
+  uri: url="https://api.github.com/repos/neovim/neovim/releases/latest"
+  register: neovim_github_response
+
+- name: Set latest release
+  set_fact: neovim_version_latest="{{ neovim_github_response.json.tag_name | regex_replace("v", "") }}"
+
+- name: Get local version
+  block:
+    - name: Query local version
+      shell: "nvim --version | head -n 1 | cut -d ' ' -f2"
+      register: neovim_shell_output
+    - name: Store local version
+      set_fact: neovim_version_local="{{ neovim_shell_output.stdout }}"
+  when: neovim_installed
+
+- name: Compare versions
+  set_fact: neovim_version_mismatch=true
+  when:
+    - neovim_installed
+    - neovim_version_latest != neovim_version_local
+
+- name: Check if build can be skipped
+  set_fact: neovim_should_build=false
+  when:
+    - neovim_installed
+    - not neovim_version_mismatch
+
+- name: Get source
+  unarchive:
+    dest: /tmp
+    remote_src: yes
+    src: "https://github.com/neovim/neovim/archive/v{{ neovim_version_latest }}.tar.gz"
+  when: neovim_should_build
+
+- name: Install build dependencies
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - clang
+    - cmake
+    - ninja-build
+    - gettext
+    - libtool
+    - libtool-bin
+    - autoconf
+    - automake
+    - pkg-config
+    - unzip
+  when: neovim_should_build
+
+- name: Install from source
+  block:
+    - name: Build from source
+      command: make "CMAKE_BUILD_TYPE=Release"
+      chdir: "/tmp/neovim-{{ neovim_version_latest }}"
+    - name: Install
+      become: yes
+      command: make install
+      chdir: "/tmp/neovim-{{ neovim_version_latest }}"
+  when: neovim_should_build
+
+- name: Remove temporary files
+  command: rm -rf "/tmp/neovim-{{ neovim_version_latest }}"
+  when: neovim_should_build
+

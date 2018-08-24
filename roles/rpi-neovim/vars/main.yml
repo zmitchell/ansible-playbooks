@@ -1,0 +1,2 @@
+neovim_should_build: true
+neovim_version_mismatch: false

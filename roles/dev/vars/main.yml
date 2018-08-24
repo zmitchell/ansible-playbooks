@@ -1,35 +1,9 @@
-system_packages:
-  - python-pip
-  - zsh
-  - neovim
-  - git
-  - tmux
-  - tree
-python_packages:
-  - virtualenv
-  - poetry
-  - flake8
-  - neovim
-  - pipenv
-  - bpython
-user_packages:
-  - ripgrep
-  - fzf
-  - exa
-  - socat
-  - ethtool
-  - clang
-  - rsync
-  - zeal
-  - jq
 packages:
   system:
+    - build-essential
+    - cmake
     - python-pip
     - zsh
-    - neovim
-    - ripgrep
-    - fzf
-    - exa
     - socat
     - ethtool
     - git
@@ -39,12 +13,16 @@ packages:
     - tree
     - jq
     - tmux
+    - curl
+    - ntfs-3g
   python:
     - virtualenv
     - poetry
     - bpython
     - flake8
-    - neovim
+  rust:
+    - ripgrep
+    - exa
 dirs:
   - "{{ ansible_env.HOME }}/Projects"
   - "{{ ansible_env.HOME }}/.fonts"

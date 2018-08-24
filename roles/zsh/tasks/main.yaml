@@ -1,0 +1,56 @@
+- name: Set zsh as the default shell
+  become: yes
+  user:
+    name: "{{ ansible_user_id }}"
+    shell: /usr/bin/zsh
+
+- name: Download plugins
+  git:
+    repo: "{{ item.url }}"
+    dest: "{{ zsh_dotfiles_root }}/{{ item.name }}"
+    clone: yes
+    force: yes
+  with_items: "{{ zsh_plugins }}"
+
+- name: Clone base16-shell repo
+  git:
+    repo: "https://github.com/chriskempson/base16-shell.git"
+    dest: "{{ config_root }}/base16-shell"
+    clone: yes
+    force: yes
+
+- name: Ensure completions directory exists
+  file:
+    path: "{{ zsh_dotfiles_root }}/completions"
+    state: directory
+
+- name: Copy files to remote
+  copy:
+    src: files/
+    dest: "{{ zsh_dotfiles_root }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+
+- name: Copy templates to remote
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ zsh_dotfiles_root }}/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  with_items:
+    - prompt
+    - aliases
+
+- name: Create symbolic links
+  file:
+    src: "{{ zsh_dotfiles_root }}/{{ item }}"
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: link
+    force: yes
+  with_items:
+    - .zshrc
+    - .zshenv
+    - .zprofile
+
+- name: Set the terminal color scheme
+  command: base16_ocean

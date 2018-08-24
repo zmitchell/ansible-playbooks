@@ -2,6 +2,6 @@
 - hosts: devmachine
   roles:
     - dev
-    - dotfiles
+    # - dotfiles
   vars_files:
     - vars.yml

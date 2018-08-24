@@ -1,0 +1,34 @@
+- name: Install apt packages
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - python3-pip
+    - zsh
+    - neovim
+    - git
+    - tmux
+    - tree
+    - rsync
+    - jq
+    - snapd
+
+- name: Install Python packages
+  pip:
+    name: "{{ item }}"
+    state: latest
+    extra_args: --user
+    executable: /usr/bin/pip3
+  with_items:
+    - virtualenv
+    - pipenv
+    - poetry
+    - bpython
+    - flake8
+
+- name: Set shell to zsh
+  become: yes
+  user:
+    name: pi
+    shell: /usr/bin/zsh

@@ -1,0 +1,4 @@
+---
+- hosts: widget
+  roles:
+    - rpi
