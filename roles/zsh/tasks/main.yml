@@ -1,8 +1,24 @@
+- name: Install zsh
+  become: yes
+  package:
+    name: zsh
+    state: present
+
 - name: Set zsh as the default shell
   become: yes
   user:
     name: "{{ ansible_user_id }}"
     shell: /usr/bin/zsh
+
+- name: Ensure main dotfiles directory exists
+  file:
+    path: "{{ ansible_env.HOME }}/.dotfiles"
+    state: directory
+
+- name: Ensure zsh dotfiles directory exists
+  file:
+    path: "{{ zsh_dotfiles_root }}"
+    state: directory
 
 - name: Download plugins
   git:
@@ -24,14 +40,14 @@
     path: "{{ zsh_dotfiles_root }}/completions"
     state: directory
 
-- name: Copy files to remote
+- name: Copy files
   copy:
     src: files/
     dest: "{{ zsh_dotfiles_root }}"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
 
-- name: Copy templates to remote
+- name: Copy templates
   template:
     src: "{{ item }}.j2"
     dest: "{{ zsh_dotfiles_root }}/{{ item }}"
@@ -52,5 +68,5 @@
     - .zshenv
     - .zprofile
 
-- name: Set the terminal color scheme
-  command: base16_ocean
+- name: Reminder to set the color scheme
+  command: echo base16_ocean

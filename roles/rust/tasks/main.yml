@@ -1,0 +1,24 @@
+- name: Check if rustup is installed
+  stat:
+    path: "{{ ansible_env.HOME }}/.cargo/bin/rustup"
+  register: rust_stat_result
+- block:
+  - name: Download Rust installer
+    get_url:
+      url: "https://sh.rustup.rs"
+      dest: "/tmp/rustup_init.sh"
+  - name: Run Rust installer, accepting defaults
+    command: "sh /tmp/rustup_init.sh -y"
+  - name: Remove Rust installer
+    file:
+      path: "/tmp/rustup_init.sh"
+      state: absent
+  when: rust_stat_result.stat.exists == False
+- name: Install additional toolchains
+  command: "{{ ansible_env.HOME }}/.cargo/bin/rustup toolchain install {{ item }}"
+  with_items: "{{ additional_toolchains }}"
+- name: Set default toolchain
+  command: "{{ ansible_env.HOME }}/.cargo/bin/rustup default {{ default_toolchain }}"
+- name: Install rustup components
+  command: "{{ ansible_env.HOME }}/.cargo/bin/rustup component add {{ item }}"
+  with_items: "{{ components }}"

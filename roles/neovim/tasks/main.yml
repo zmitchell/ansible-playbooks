@@ -1,14 +1,13 @@
-- name: Ensure that neovim is installed
+- name: Install neovim
   become: yes
-  apt:
+  package:
     name: neovim
-    state: latest
+    state: present
 
-- name: Ensure that neovim Python package is installed
+- name: Install neovim Python package
   pip:
     name: neovim
     state: latest
-    executable: /usr/bin/pip3
     extra_args: --user
 
 - name: Detect dein installation
@@ -16,20 +15,18 @@
   register: dein_already_installed
   failed_when: dein_already_installed.stderr != ""
 
-- name: Download dein installer
-  get_url:
-    url: "https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh"
-    dest: "/tmp/dein_installer.sh"
+- block:
+  - name: Download dein installer
+    get_url:
+      url: "https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh"
+      dest: "/tmp/dein_installer.sh"
+  - name: Run dein installer
+    command: bash /tmp/dein_installer.sh "{{ neovim_config_root }}/bundle"
+  - name: Remove dein installer
+    file:
+      path: /tmp/dein_installer.sh
+      state: absent
   when: dein_already_installed.rc == 1
-
-- name: Run dein installer
-  command: bash /tmp/dein_installer.sh "{{ neovim_config_root }}/bundle"
-  when: dein_already_installed.rc == 1
-
-- name: Remove dein installer
-  file:
-    path: /tmp/dein_installer.sh
-    state: absent
 
 - name: Copy init.vim
   copy:

@@ -1,0 +1,7 @@
+packages:
+  - virtualenv
+  - bpython
+  - flake8
+  - poetry
+  - pipenv
+  - black

@@ -54,13 +54,13 @@ zstyle ':completion:*' group-name ''
 # once per day, rather than every time the shell loads.
 autoload -Uz compinit
 if [ $(uname) = Linux ]; then
-  if [ $(expr $(expr $(date +"%s") - $(stat -c %Y $HOME/.dotfiles/zsh/.zcompdump)) \> 86400) ]; then
+  if [ $(expr $(expr $(date +"%s") - $(stat -c %Y $HOME/.zcompdump)) \> 86400) ]; then
     compinit
   else
     compinit -C
   fi
 else
-  if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' $HOME/.dotfiles/zsh/.zcompdump) ]; then
+  if [ $(date +'%j') != $(stat -f '%Sm' -t '%j' $HOME/.zcompdump) ]; then
     compinit
   else
     compinit -C

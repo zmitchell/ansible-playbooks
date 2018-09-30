@@ -1,0 +1,13 @@
+# Toolchain: stable, beta, nightly
+additional_toolchains:
+  - nightly
+default_toolchain: nightly
+
+# Components
+components:
+  - rustfmt-preview
+  - rls-preview
+  - clippy-preview
+  - llvm-tools-preview
+  - rust-src
+  - rust-analysis

@@ -1,0 +1,11 @@
+packages:
+  - fzf
+  - exa
+  - ripgrep
+  - socat
+  - jq
+  - ethtool
+  - rsync
+  - tree
+  - tmux
+  - bat
