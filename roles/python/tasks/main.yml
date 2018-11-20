@@ -1,4 +1,4 @@
-- name: Install Python
+- name: Install Pip
   become: yes
   package:
     name: python-pip
