@@ -1,12 +1,6 @@
 # Ansible Playbooks
 
-These are my personal Ansible playbooks. Right now I only use them for setting up a new development environment.
-
-## About
-
-I have a desktop running Antergos (which is basically just Arch Linux). The `init_dev_env.yml` playbook will install a handful of system packages(`ripgrep`, `ethtool`, etc) and a handful of Python packages (`poetry`, `pipenv`, etc).
-
-A few directories are also created to store my projects and things like that. In the near future I'll be extending this playbook to work for macOS and Raspbian (Debian).
+These are my personal Ansible playbooks. I'm relatively new to Ansible, so maybe some of these roles/playbooks aren't terribly idiomatic. I mostly use this for getting a VM or Raspberry Pi up and running as automatically and as systematically as possible.
 
 ## License
 
