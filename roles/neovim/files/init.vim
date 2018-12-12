@@ -132,6 +132,9 @@ set ruler
 " Show line numbers in the gutter
 set nu
 
+" Show relative line numbers
+set relativenumber
+
 " Make searches case sensitive only if the search string contains uppercase
 " characters
 set ignorecase smartcase

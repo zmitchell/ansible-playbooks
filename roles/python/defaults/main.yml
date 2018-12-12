@@ -1,7 +1,8 @@
-packages:
+python_packages:
   - virtualenv
   - bpython
   - flake8
   - poetry
   - pipenv
   - black
+which_pip: pip

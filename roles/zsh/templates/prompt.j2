@@ -153,7 +153,7 @@ function auto-ls-after-cd() {
   # Only in response to a user-initiated `cd`, not indirectly (eg. via another
   # function).
   if [ "$ZSH_EVAL_CONTEXT" = "toplevel:shfunc" ]; then
-    {{ "exa -a" if ansible_distribution != "Debian" else "ls -a" }}
+    {{ zsh_auto_ls_cmd }}
   fi
 }
 add-zsh-hook chpwd auto-ls-after-cd

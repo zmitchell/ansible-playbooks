@@ -4,9 +4,10 @@
     name: python-pip
     state: present
 
-- name: Install packages
+- name: Install Python packages
   pip:
     name: "{{ item }}"
     state: present
     extra_args: "--user"
-  with_items: "{{ packages }}"
+    executable: "{{ which_pip }}"
+  with_items: "{{ python_packages }}"

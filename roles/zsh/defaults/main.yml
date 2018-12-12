@@ -4,3 +4,6 @@ zsh_plugins:
   - { name: colored-man-pages_mod, url: "https://github.com/zuxfoucault/colored-man-pages_mod.git" }
   - { name: zsh-completions, url: "https://github.com/zsh-users/zsh-completions.git" }
   - { name: zsh-syntax-highlighting, url: "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
+zsh_fzf_altc_cmd: "fd -a -p -L --type directory '\\.*/\\.*' /etc /usr $HOME 2> /dev/null"
+zsh_show_cmd: "exa -alb"
+zsh_auto_ls_cmd: "exa -a"

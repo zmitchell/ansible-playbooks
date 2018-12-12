@@ -5,9 +5,9 @@ default_toolchain: nightly
 
 # Components
 components:
-  - rustfmt-preview
-  - rls-preview
-  - clippy-preview
+  - rustfmt
+  - rls
+  - clippy
   - llvm-tools-preview
   - rust-src
   - rust-analysis

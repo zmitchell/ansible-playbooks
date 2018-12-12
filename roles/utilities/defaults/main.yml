@@ -1,4 +1,4 @@
-packages:
+system_packages:
   - fzf
   - exa
   - ripgrep
