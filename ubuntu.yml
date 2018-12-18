@@ -22,3 +22,4 @@
         zsh_show_cmd: "ls -al"
         zsh_auto_ls_cmd: "ls -a"
     - neovim
+    - fzf
