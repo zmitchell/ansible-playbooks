@@ -1,3 +1,12 @@
+# This role needs to be updated to run the installation script from the fzf
+# repository rather than just downloading the binary. Without running the
+# installation script, the completions and keybindings won't work. Part of the
+# installation process is putting 'fzf.zsh' in a certain location, which
+# doesn't happen when only the binary is downloaded.
+# 
+# I haven't tried running the installation script from within Ansible yet, but
+# I ran it locally and it worked. I used the following options:
+# $ ./install --no-bash --no-fish --64 --key-bindings --completion --update-rc
 - name: Look for existing binary
   command: which fzf
   changed_when: false
