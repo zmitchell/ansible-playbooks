@@ -54,6 +54,7 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
   with_items:
+    - .zshrc
     - prompt
     - aliases
 
