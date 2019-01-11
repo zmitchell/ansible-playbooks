@@ -1,13 +1,14 @@
 - name: Install Pip
-  become: yes
+  become: "{{ python_should_become }}"
   package:
     name: python-pip
     state: present
+    use: "{{ python_package_manager }}"
+  when: python_install_pip_separately
 
 - name: Install Python packages
   pip:
-    name: "{{ item }}"
+    name: "{{ python_packages }}"
     state: present
     extra_args: "--user"
     executable: "{{ which_pip }}"
-  with_items: "{{ python_packages }}"

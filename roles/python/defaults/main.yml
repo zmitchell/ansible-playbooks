@@ -6,3 +6,6 @@ python_packages:
   - pipenv
   - black
 which_pip: pip
+python_should_become: yes
+python_package_manager: auto
+python_install_pip_separately: yes

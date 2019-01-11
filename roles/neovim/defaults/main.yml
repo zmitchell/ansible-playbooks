@@ -1,1 +1,4 @@
 neovim_config_root: "{{ ansible_env.HOME }}/.config/nvim"
+neovim_should_become: yes
+neovim_package_manager: auto
+neovim_owner_group: "{{ ansible_user_id }}"

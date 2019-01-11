@@ -1,8 +1,9 @@
 - name: Install neovim
-  become: yes
+  become: "{{ neovim_should_become }}"
   package:
     name: neovim
     state: present
+    use: "{{ neovim_package_manager }}"
 
 - name: Install neovim Python package
   pip:
@@ -33,4 +34,4 @@
     src: init.vim
     dest: "{{ neovim_config_root }}/init.vim"
     owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    group: "{{ neovim_owner_group }}"

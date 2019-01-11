@@ -1,6 +1,7 @@
 - name: Install system packages
-  become: yes
+  become: "{{ utilities_should_become }}"
   package:
     name: "{{ item }}"
     state: present
+    use: "{{ utilities_package_manager }}"
   with_items: "{{ system_packages }}"

@@ -9,5 +9,6 @@ components:
   - rls
   - clippy
   - llvm-tools-preview
+  - lldb-preview
   - rust-src
   - rust-analysis

@@ -1,0 +1,20 @@
+- hosts: all
+  connection: local
+  roles:
+    - role: utilities
+      vars:
+        system_packages:
+          - # packages to install
+    - role: rust
+      vars:
+        components:
+          - # components to install
+    - role: python
+      vars:
+        which_pip: pip3
+        python_packages:
+          - # packages to install
+    # override commands if necessary
+    - role: zsh
+    - neovim
+    - fzf

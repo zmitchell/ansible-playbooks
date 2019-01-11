@@ -1,29 +1,30 @@
 - name: Install zsh
-  become: yes
+  become: "{{ zsh_should_become }}"
   package:
     name: zsh
     state: present
+    use: "{{ zsh_package_manager }}"
 
 - name: Set zsh as the default shell
   become: yes
   user:
     name: "{{ ansible_user_id }}"
-    shell: /usr/bin/zsh
+    shell: "{{ zsh_bin_location }}"
 
-- name: Ensure main dotfiles directory exists
+- name: Ensure zsh completions directory exists
   file:
-    path: "{{ ansible_env.HOME }}/.dotfiles"
+    path: "{{ zsh_completions_dir }}"
     state: directory
 
-- name: Ensure zsh dotfiles directory exists
+- name: Ensure zsh plugins directory exists
   file:
-    path: "{{ zsh_dotfiles_root }}"
+    path: "{{ zsh_plugins_dir }}"
     state: directory
 
 - name: Download plugins
   git:
     repo: "{{ item.url }}"
-    dest: "{{ zsh_dotfiles_root }}/{{ item.name }}"
+    dest: "{{ zsh_plugins_dir }}/{{ item.name }}"
     clone: yes
     force: yes
   with_items: "{{ zsh_plugins }}"
@@ -35,39 +36,26 @@
     clone: yes
     force: yes
 
-- name: Ensure completions directory exists
-  file:
-    path: "{{ zsh_dotfiles_root }}/completions"
-    state: directory
-
 - name: Copy files
   copy:
     src: files/
-    dest: "{{ zsh_dotfiles_root }}"
+    dest: "{{ ansible_env.HOME }}"
     owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    group: "{{ zsh_owner_group }}"
 
 - name: Copy templates
   template:
     src: "{{ item }}.j2"
-    dest: "{{ zsh_dotfiles_root }}/{{ item }}"
+    dest: "{{ ansible_env.HOME }}/{{ item }}"
     owner: "{{ ansible_user_id }}"
-    group: "{{ ansible_user_id }}"
+    group: "{{ zsh_owner_group }}"
   with_items:
     - .zshrc
-    - prompt
-    - aliases
+    - .zsh_prompt
+    - .zsh_aliases
 
-- name: Create symbolic links
+- name: Add .hushlogin
   file:
-    src: "{{ zsh_dotfiles_root }}/{{ item }}"
-    path: "{{ ansible_env.HOME }}/{{ item }}"
-    state: link
-    force: yes
-  with_items:
-    - .zshrc
-    - .zshenv
-    - .zprofile
-
-- name: Reminder to set the color scheme
-  command: echo base16_ocean
+    path: "{{ ansible_env.HOME }}/.hushlogin"
+    state: touch
+  when: zsh_add_hushlogin

@@ -1,0 +1,5 @@
+alias zshreload='source {{ ansible_env.HOME }}/.zshrc'
+alias zshconfig='nvim {{ ansible_env.HOME }}/.zshrc'
+alias show='{{ zsh_show_cmd }}'
+alias nvimconfig='nvim {{ ansible_env.HOME }}/.config/nvim/init.vim'
+function mkcd () mkdir "$1" && cd "$1"

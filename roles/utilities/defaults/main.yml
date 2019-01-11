@@ -9,3 +9,5 @@ system_packages:
   - tree
   - tmux
   - bat
+utilities_should_become: yes
+utilities_package_manager: auto

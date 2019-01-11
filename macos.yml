@@ -1,0 +1,58 @@
+# run with ansible-playbook -K --connection=local --inventory 127.0.0.1, macos.yml
+- hosts: all
+  connection: local
+  roles:
+    - role: utilities
+      vars:
+        system_packages:
+          - bat
+          - clang-format
+          - emacs
+          - exa
+          - fd
+          - fzf
+          - git
+          - gdb
+          - gcc
+          - jq
+          - mosh
+          - neovim
+          - node
+          - python3
+          - ripgrep
+          - rsync
+          - socat
+          - tealdeer
+          - tree
+          - zsh
+        utilities_should_become: no
+        utilities_package_manager: homebrew
+    - role: rust
+      vars:
+        default_toolchain: stable
+        additional_toolchains: []
+    - role: python
+      vars:
+        which_pip: pip3
+        python_packages:
+          - poetry
+          - pipenv
+          - virtualenv
+          - black
+          - flake8
+          - neovim
+          - bpython
+        python_should_become: no
+        python_package_manager: homebrew
+        python_install_pip_separately: no
+    - role: zsh
+      vars:
+        zsh_should_become: no
+        zsh_package_manager: homebrew
+        zsh_owner_group: staff
+        zsh_bin_location: /usr/local/bin/zsh
+    - role: neovim
+      vars:
+        neovim_should_become: no
+        neovim_package_manager: homebrew
+        neovim_owner_group: staff

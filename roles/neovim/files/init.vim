@@ -23,6 +23,7 @@ if dein#load_state('$HOME/.config/nvim/bundle')
   call dein#add('tpope/vim-repeat')
   call dein#add('tpope/vim-commentary')
   call dein#add('wincent/pinnacle')
+  call dein#add('jiangmiao/auto-pairs')
   " call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
   call dein#add('junegunn/fzf.vim', { 'depends': 'fzf' })
   " Color schemes

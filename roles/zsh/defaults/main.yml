@@ -1,5 +1,6 @@
 config_root: "{{ ansible_env.HOME }}/.config"
-zsh_dotfiles_root: "{{ ansible_env.HOME }}/.dotfiles/zsh"
+zsh_completions_dir: "{{ ansible_env.HOME }}/.zsh_completions"
+zsh_plugins_dir: "{{ ansible_env.HOME }}/.zsh_plugins"
 zsh_plugins:
   - { name: colored-man-pages_mod, url: "https://github.com/zuxfoucault/colored-man-pages_mod.git" }
   - { name: zsh-completions, url: "https://github.com/zsh-users/zsh-completions.git" }
@@ -7,3 +8,8 @@ zsh_plugins:
 zsh_fzf_altc_cmd: "fd -a -p -L --type directory '\\.*/\\.*' /etc /usr $HOME 2> /dev/null"
 zsh_show_cmd: "exa -alb"
 zsh_auto_ls_cmd: "exa -a"
+zsh_should_become: yes
+zsh_package_manager: auto
+zsh_owner_group: "{{ ansible_user_id }}"
+zsh_bin_location: /usr/bin/zsh
+zsh_add_hushlogin: yes
