@@ -1,8 +1,31 @@
 - hosts: all
   connection: local
   roles:
-    - utilities
-    - rust
+    - role: utilities
+      vars:
+        system_packages:
+          - fzf
+          - exa
+          - ripgrep
+          - socat
+          - jq
+          - rsync
+          - tree
+          - bat
+          - git
+          - tldr
+          - clang
+          - valgrind
+          - fd
+    - role: rust
+      vars:
+        components:
+          - rls
+          - clippy
+          - rustfmt
+          - rust-src
+          - rust-analysis
+          - llvm-tools-preview
     - python
     - zsh
     - neovim
