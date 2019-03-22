@@ -51,6 +51,8 @@
         zsh_package_manager: homebrew
         zsh_owner_group: staff
         zsh_bin_location: /usr/local/bin/zsh
+        zsh_fzf_keybindings_location: /usr/local/opt/fzf/shell/key-bindings.zsh
+        zsh_fzf_completions_location: /usr/local/opt/fzf/shell/completion.zsh
     - role: neovim
       vars:
         neovim_should_become: no

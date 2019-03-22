@@ -13,3 +13,5 @@ zsh_package_manager: auto
 zsh_owner_group: "{{ ansible_user_id }}"
 zsh_bin_location: /usr/bin/zsh
 zsh_add_hushlogin: yes
+zsh_fzf_keybindings_location: /usr/share/fzf/key-bindings.zsh
+zsh_fzf_completions_location: /usr/share/fzf/completions.zsh

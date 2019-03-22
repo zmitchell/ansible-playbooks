@@ -99,6 +99,8 @@ source "{{ zsh_plugins_dir }}/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 
 # Command line fuzzy finder
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source "{{ zsh_fzf_completions_location }}"
+source "{{ zsh_fzf_keybindings_location }}"
 export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --follow -g "!{.git,.virtualenvs}/*" 2> /dev/null'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS="--no-height --no-reverse --preview 'cat {}'"
