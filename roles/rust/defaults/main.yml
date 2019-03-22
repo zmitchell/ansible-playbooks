@@ -1,9 +1,7 @@
 # Toolchain: stable, beta, nightly
 additional_toolchains:
   - nightly
-default_toolchain: nightly
-
-# Components
+default_toolchain: stable
 components:
   - rustfmt
   - rls
