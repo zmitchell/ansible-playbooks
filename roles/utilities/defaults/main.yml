@@ -4,10 +4,9 @@ system_packages:
   - ripgrep
   - socat
   - jq
-  - ethtool
   - rsync
   - tree
-  - tmux
   - bat
+  - git
 utilities_should_become: yes
 utilities_package_manager: auto
