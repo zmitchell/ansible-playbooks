@@ -1,7 +1,7 @@
 - name: Install Pip
   become: "{{ python_should_become }}"
   package:
-    name: python-pip
+    name: python3-pip
     state: present
     use: "{{ python_package_manager }}"
   when: python_install_pip_separately
