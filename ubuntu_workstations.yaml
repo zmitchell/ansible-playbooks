@@ -1,0 +1,35 @@
+- hosts: home
+  gather_facts: no
+  pre_tasks:
+    - name: Install Python if it's not present.
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      changed_when: False
+    - name: Gather facts after Python is definitely present.
+      setup:
+  roles:
+    - role: utilities
+      vars:
+        system_packages:
+          - socat
+          - jq
+          - tree
+          - rsync
+    - role: rust
+      vars:
+        components:
+          - rust-src
+          - rust-analysis
+          - rls
+          - rustfmt
+          - llvm-tools-preview
+          - clippy
+    - role: python
+      vars:
+        which_pip: pip3
+    - role: zsh
+      vars:
+        zsh_fzf_altc_cmd: "command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune -o -type d -print 2> /dev/null | cut -b3-"
+        zsh_show_cmd: "ls -al"
+        zsh_auto_ls_cmd: "ls -a"
+    - neovim
+    - fzf
